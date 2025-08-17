@@ -35,3 +35,49 @@ function newForm() {
   r.style.display = 'none';
   p.src = s.src = '';
 }
+const form = document.getElementById('form');
+const result = document.getElementById('res');
+const output = document.getElementById('out');
+const photo = document.getElementById('photo');
+const sign = document.getElementById('sign');
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  // Collect text fields
+  let text = '';
+  for (const [key, value] of new FormData(form)) {
+    if (key !== 'photo' && key !== 'signature') {
+      text += `${key}: ${value}\n`;
+    }
+  }
+  output.textContent = text;
+
+  // Preview images
+  const showImage = (file, element) => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => element.src = e.target.result;
+      reader.readAsDataURL(file);
+    }
+  };
+
+  showImage(form.photo.files[0], photo);
+  showImage(form.signature.files[0], sign);
+
+  form.style.display = 'none';
+  result.style.display = 'block';
+});
+
+function newForm() {
+  form.reset();
+  form.style.display = 'block';
+  result.style.display = 'none';
+  photo.src = '';
+  sign.src = '';
+}
